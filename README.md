@@ -35,13 +35,18 @@ npm start                 # serves the built client and the API on :8787
 
 ## Deploy to Vercel
 
-The repo is set up for Vercel: `vercel.json` builds both workspaces, serves `client/dist` as static files, and routes `/api/*` to `api/index.js`, a serverless function that runs the same Express app as `npm start`.
+`vercel.json` deploys the repo as one Vercel project with two [services](https://vercel.com/docs/services) on one domain:
 
-1. Push the repo to GitHub and import it at [vercel.com/new](https://vercel.com/new). Leave **Root Directory** as the repo root; the build settings come from `vercel.json`.
+- `client`: the Vite site, served for every path except `/api/*`. Unknown paths fall back to `index.html` so `/login` and `/workspace` load the app.
+- `server`: the Express app in `server/src/app.ts`, which receives `/api/*` with the path unchanged.
+
+The browser calls `/api/*` on the same domain, so the services don't call each other and need no bindings.
+
+1. Push the repo to GitHub and import it at [vercel.com/new](https://vercel.com/new). Leave **Root Directory** as the repo root.
 2. Under **Settings → Environment Variables**, add `GROQ_API_KEY`, `GROQ_MODEL` and the four `VITE_FIREBASE_*` values. The `VITE_*` values are baked into the client at build time, so redeploy after changing them.
 3. In Firebase, add your Vercel domain (e.g. `your-app.vercel.app`) under **Authentication → Settings → Authorized domains**, or Google sign-in will fail.
 
-Streams are capped at 60 seconds (`maxDuration` in `vercel.json`). The rate limiter keeps its counts in memory, so on Vercel each function instance counts separately.
+To run both services locally the way Vercel does, use `vercel dev`. The rate limiter keeps its counts in memory, so on Vercel each function instance counts separately.
 
 ## API
 
