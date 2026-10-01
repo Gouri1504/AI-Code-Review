@@ -13,24 +13,9 @@ if (!process.env.GROQ_API_KEY) {
   process.exit(1);
 }
 
-// Imported after the env check so the Groq client is created with the key present.
+// Imported after dotenv so the app's modules see the env vars.
+const { default: app } = await import('./app.js');
 const { checkModel, model } = await import('./groq.js');
-const { runRouter } = await import('./routes/run.js');
-const { rateLimit } = await import('./rateLimit.js');
-const { authEnabled, requireUser } = await import('./auth.js');
-
-if (!authEnabled) {
-  console.warn('[server] Firebase is not configured (VITE_FIREBASE_PROJECT_ID), so /api/run is open to anyone.');
-}
-
-const app = express();
-app.disable('x-powered-by');
-app.use(express.json({ limit: '1mb' }));
-
-app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, model });
-});
-app.use('/api/run', requireUser, rateLimit, runRouter);
 
 const clientDist = path.join(rootDir, 'client', 'dist');
 if (fs.existsSync(clientDist)) {

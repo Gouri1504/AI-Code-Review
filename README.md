@@ -33,6 +33,16 @@ npm run build
 npm start                 # serves the built client and the API on :8787
 ```
 
+## Deploy to Vercel
+
+The repo is set up for Vercel: `vercel.json` builds both workspaces, serves `client/dist` as static files, and routes `/api/*` to `api/index.js`, a serverless function that runs the same Express app as `npm start`.
+
+1. Push the repo to GitHub and import it at [vercel.com/new](https://vercel.com/new). Leave **Root Directory** as the repo root; the build settings come from `vercel.json`.
+2. Under **Settings → Environment Variables**, add `GROQ_API_KEY`, `GROQ_MODEL` and the four `VITE_FIREBASE_*` values. The `VITE_*` values are baked into the client at build time, so redeploy after changing them.
+3. In Firebase, add your Vercel domain (e.g. `your-app.vercel.app`) under **Authentication → Settings → Authorized domains**, or Google sign-in will fail.
+
+Streams are capped at 60 seconds (`maxDuration` in `vercel.json`). The rate limiter keeps its counts in memory, so on Vercel each function instance counts separately.
+
 ## API
 
 `POST /api/run` requires `Authorization: Bearer <Firebase ID token>`, accepts `{ workflow, language, code, prompt?, history?, followUp? }` and streams back `delta`, `done` and `error` events. `GET /api/health` reports the server status and the configured model.
