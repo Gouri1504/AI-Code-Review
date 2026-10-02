@@ -1,16 +1,16 @@
 import express from 'express';
 
 // The Express app without listen() or static files, so it can run under `npm start` (index.ts)
-// and be exported by the explicit ESM Vercel entrypoint. Env vars must be loaded before importing this.
+// and as Vercel's CommonJS Express entrypoint. Env vars must be loaded before importing this.
 if (!process.env.GROQ_API_KEY) {
   throw new Error('GROQ_API_KEY is not set. Add a key from https://console.groq.com/keys to .env (or your Vercel project settings).');
 }
 
-// Imported after the env check so the Groq client is created with the key present.
-const { model } = await import('./groq.js');
-const { runRouter } = await import('./routes/run.js');
-const { rateLimit } = await import('./rateLimit.js');
-const { authEnabled, requireUser } = await import('./auth.js');
+// Load the API modules after validating the key so the Groq client is not initialized without it.
+const { model } = require('./groq.js') as typeof import('./groq.js');
+const { runRouter } = require('./routes/run.js') as typeof import('./routes/run.js');
+const { rateLimit } = require('./rateLimit.js') as typeof import('./rateLimit.js');
+const { authEnabled, requireUser } = require('./auth.js') as typeof import('./auth.js');
 
 if (!authEnabled) {
   console.warn('[server] Firebase is not configured (VITE_FIREBASE_PROJECT_ID), so /api/run is open to anyone.');

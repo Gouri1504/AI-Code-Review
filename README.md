@@ -76,7 +76,6 @@ The architecture is split into a React client and an Express server.
 - `client/src/lib/api.ts`: streaming client helper for `/api/run`.
 - `client/src/auth/AuthProvider.tsx`: sign-in, sign-up, reset-password, and token handling.
 - `server/src/app.ts`: Express app setup and `/api/health` route.
-- `server/src/vercel.mts`: Explicit ESM entrypoint used by the Vercel server service; it exports the Express app.
 - `server/src/routes/run.ts`: streaming AI run endpoint.
 - `server/src/auth.ts`: Firebase token verification middleware.
 - `server/src/schema.ts`: Zod validation for the request body.
@@ -353,7 +352,7 @@ The repo is configured for Vercel in `vercel.json`.
     "server": {
       "root": "server",
       "framework": "express",
-      "entrypoint": "src/vercel.mts"
+      "entrypoint": "src/app.ts"
     }
   }
 }
