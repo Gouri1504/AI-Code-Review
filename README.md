@@ -205,7 +205,7 @@ npm start
 | Command | What it does |
 |---|---|
 | `npm run dev -w server` | Runs `tsx watch src/index.ts` for hot-reload development. |
-| `npm run build -w server` | Runs `tsc -p tsconfig.json`. |
+| `npm run build -w server` | Type-checks with `tsc`, then bundles `src/app.ts` and `src/index.ts` into self-contained CommonJS files in `dist/` with esbuild (needed on Vercel, whose runtime cannot `require()` ESM-only dependencies). |
 | `npm run start -w server` | Runs `node dist/index.js`. |
 
 ### Client scripts
