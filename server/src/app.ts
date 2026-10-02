@@ -1,7 +1,7 @@
 import express from 'express';
 
 // The Express app without listen() or static files, so it can run under `npm start` (index.ts)
-// and as the Vercel `server` service (entrypoint in vercel.json). Env vars must be loaded before importing this.
+// and be exported by the explicit ESM Vercel entrypoint. Env vars must be loaded before importing this.
 if (!process.env.GROQ_API_KEY) {
   throw new Error('GROQ_API_KEY is not set. Add a key from https://console.groq.com/keys to .env (or your Vercel project settings).');
 }

@@ -10,7 +10,7 @@
     "server": {
       "root": "server",
       "framework": "express",
-      "entrypoint": "src/app.ts"
+      "entrypoint": "src/vercel.mts"
     }
   },
   "rewrites": [
